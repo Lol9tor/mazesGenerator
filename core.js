@@ -4,10 +4,10 @@ function Cell () {
     this.type = 0; // 0 - usual, 1 - startPoint, 2 - endPoint, 3 - path
 }
 
-function Core () {
+function Core (height, width) {
     this.data = [];
-    this.width = 11;
-    this.height = 11;
+    this.width = width || 11;
+    this.height = height || 11;
     this.drawer = new Drawer();
 }
 
@@ -41,8 +41,9 @@ Core.prototype.buildPath = function (wallsData, from, to) {
 
 Core.prototype.getBestPath = function (pathData, wallsData) {
     for (var i =0; i < pathData.length; i++){
+        var lastElem = pathData[pathData.length-1][pathData[i].length-1];
         for (var j = 0; j<pathData[i].length; j++){
-            if(pathData[i][j] == pathData[pathData.length-1][pathData[i].length-1]){
+            if(pathData[i][j] == lastElem){
                 wallsData[i][j].type = 3;
             }
         }
@@ -105,9 +106,9 @@ Core.prototype.compareCells = function (data, from, to) {
 Core.prototype.generate = function () {
    var self = this;
 
-   for (var i=0; i<11; i++){
+   for (var i=0; i<this.width; i++){
        self.data[i] = [];
-       for (var j=0; j<11; j++){
+       for (var j=0; j<this.height; j++){
             self.data[i][j] = new Cell();
        }
    }
