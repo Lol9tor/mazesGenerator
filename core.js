@@ -4,15 +4,6 @@ function Cell () {
     this.type = 0; // 0 - usual, 1 - startPoint, 2 - endPoint, 3 - path
 }
 
-
-function Human () {
-    this.name = 'test';
-}
-
-Human.prototype.sayName = function  () {
-    return this.name;
-};
-
 function Core () {
     this.data = [];
     this.width = 11;
@@ -82,7 +73,6 @@ Core.prototype.compareCells = function (data, from, to) {
     j = 0;
     arr[x][y] = waves;
     var somethingChanged = false;
-    //var iters = 30;
     do {
         somethingChanged = false;
         for (i = 0; i < arr.length; i++) {
@@ -108,7 +98,6 @@ Core.prototype.compareCells = function (data, from, to) {
             }
         }
         waves++;
-        //iters--;
     } while (somethingChanged && arr[to.x][to.y] == 0);// last element
     return arr;
 };
