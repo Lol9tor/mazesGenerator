@@ -3,13 +3,13 @@ function Drawer () {
 
 }
 
-Drawer.prototype.drawAll = function (arr, data) {
+Drawer.prototype.drawAll = function (data) {
     var canvas = document.getElementById('cnv'),
         stepX = 64,
         stepY = 48,
-        x, y, xG, yG,
-        halfStepX = 32,
-        halfStepY = 24;
+        xG, yG,
+        centrCellX = 27,
+        centrCellY = 19;
 
     canvas.width = 704;
     canvas.height = 528;
@@ -34,15 +34,18 @@ Drawer.prototype.drawAll = function (arr, data) {
                 ctx.lineTo(stepX + xG, yG);
             }
             ctx.stroke();
+            if (data[i][j].type === 3){
+                ctx.fillRect(xG+centrCellX, yG+centrCellY, 10, 10)
+            }
         }
     }
-    i = 0;
+/*    i = 0;
     j = 0;
     for (i = 0; i < arr.length; i++){
         for (j = 0; j < arr[i].length; j++){
             ctx.fillText(arr[i][j], i * stepX + halfStepX, j * stepY + halfStepY);
         }
-    }
+    }*/
 };
 
 
