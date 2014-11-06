@@ -3,22 +3,24 @@ function Drawer () {
 
 }
 
-Drawer.prototype.drawAll = function (data) {
+Drawer.prototype.drawAll = function (data, width, height) {
     var canvas = document.getElementById('cnv'),
         stepX = 64,
         stepY = 48,
         xG, yG,
         centrCellX = 27,
-        centrCellY = 19;
+        centrCellY = 19,
+        sizeRectX = 10,
+        sizeRectY =10;
 
-    canvas.width = 704;
-    canvas.height = 528;
-    //canvas.style.border = '1px solid';
+    canvas.width = width*stepX;
+    canvas.height = height*stepY;
+    canvas.style.border = '1px solid';
 
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = "black";
     ctx.font = '20px Georgia';
-
+    var bestPath = [];
     for (var i =0; i<data.length; i++){
 
         for (var j=0; j<data[i].length; j++) {
@@ -35,8 +37,22 @@ Drawer.prototype.drawAll = function (data) {
             }
             ctx.stroke();
             if (data[i][j].type === 3){
-                ctx.fillRect(xG+centrCellX, yG+centrCellY, 10, 10)
+                //ctx.fillRect(xG + centrCellX, yG + centrCellY, sizeRectX, sizeRectY);
+                bestPath.push([i,j]);
             }
+            if (data[i][j].type === 0){
+                ctx.fillRect(xG, yG, stepX, stepY);
+            }
+        }
+    }
+
+    var timerId = setInterval(drawPath, 200);
+    function drawPath(){
+        if (bestPath.length){
+            var element = bestPath.shift();
+            ctx.fillRect(element[0] * stepX + centrCellX, element[1] * stepY + centrCellY, sizeRectX, sizeRectY);
+        } else {
+            clearInterval(timerId);
         }
     }
 /*    i = 0;

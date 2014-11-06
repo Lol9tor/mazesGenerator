@@ -1,13 +1,13 @@
 function Cell () {
     this.top = randomBool();
     this.left = randomBool();
-    this.type = 0; // 0 - usual, 1 - startPoint, 2 - endPoint, 3 - path
+    this.type = 4; // 0 - not available, 1 - startPoint, 2 - endPoint, 3 - path, 4 - usual
 }
 
-function Core (height, width) {
+function Core (options) {
     this.data = [];
-    this.width = width || 11;
-    this.height = height || 11;
+    this.width = options.width;
+    this.height = options.height;
     this.drawer = new Drawer();
 }
 
@@ -21,7 +21,7 @@ Core.prototype.createMaze = function  () {
         mazeIsSolvable = pathData.status;
     }
     wallsData = this.getBestPath(pathData.data, wallsData);
-    this.drawer.drawAll(wallsData);
+    this.drawer.drawAll(wallsData, this.width, this.height);
 };
 
 Core.prototype.buildPath = function (wallsData, from, to) {
@@ -32,7 +32,7 @@ Core.prototype.buildPath = function (wallsData, from, to) {
         status = true;
     }
     for (var i = 0; i < fromToPath.length; i++) {
-        for (var j = 0; j < toFromPath.length; j++) {
+        for (var j = 0; j < fromToPath[i].length; j++) {
             toFromPath[i][j] += fromToPath[i][j];
         }
     }
@@ -46,6 +46,9 @@ Core.prototype.getBestPath = function (pathData, wallsData) {
             if(pathData[i][j] == lastElem){
                 wallsData[i][j].type = 3;
             }
+            if (pathData[i][j] == 0){
+                wallsData[i][j].type = 0;
+            }
         }
     }
     return wallsData;
@@ -55,7 +58,7 @@ function randomBool () {
     return Math.random() > 0.5;
 }
 Core.prototype.checkCell = function  (i, j, arr) {
-    return !(i<0 || j< 0 || i>=arr.length || j>=arr[0].length) && arr[i][j]==0;
+    return !(i<0 || j< 0 || i>=arr.length || j>=arr[i].length) && arr[i][j]==0;
 };
 
 Core.prototype.compareCells = function (data, from, to) {
@@ -64,9 +67,9 @@ Core.prototype.compareCells = function (data, from, to) {
         arr = [],
         waves = 1;
 
-    for (var i = 0; i < this.height; i++){
+    for (var i = 0; i < this.width; i++){
         arr[i] = [];
-        for (var j = 0; j < this.width; j++){
+        for (var j = 0; j < this.height; j++){
             arr[i][j] = 0;
         }
     }
@@ -100,17 +103,29 @@ Core.prototype.compareCells = function (data, from, to) {
         }
         waves++;
     } while (somethingChanged && arr[to.x][to.y] == 0);// last element
+
     return arr;
 };
 
 Core.prototype.generate = function () {
-   var self = this;
 
    for (var i=0; i<this.width; i++){
-       self.data[i] = [];
+       this.data[i] = [];
        for (var j=0; j<this.height; j++){
-            self.data[i][j] = new Cell();
+           this.data[i][j] = new Cell();
        }
    }
-    return this.data;
+   i = 0;
+   j = 0;
+   for (i=0; i<this.data.length; i++){
+       for (j=0; j<this.data[i].length; j++){
+           if (i == 0 || i == this.data.length-1){
+                this.data[i][j].left = false;
+           }
+           if (j == 0 || j == this.data[i].length-1){
+                this.data[i][j].top = false;
+           }
+       }
+   }
+   return this.data;
 };
